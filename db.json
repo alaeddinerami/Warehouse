@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Laptop HP Pavilion",
       "type": "Informatique",
       "barcode": "1234567890123",
@@ -39,7 +39,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Clavier Mécanique Logitech",
       "type": "Accessoires",
       "barcode": "9876543210987",
@@ -76,7 +76,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Pc Gamer Omen By HP",
       "type": "Informatique",
       "barcode": "1236543210987",
@@ -94,7 +94,7 @@
   ],
   "warehousemans": [
     {
-      "id": 1333,
+      "id": "1333",
       "name": "Amine Boutaleb",
       "dob": "1988-05-02",
       "city": "Oujda",
@@ -102,12 +102,159 @@
       "warehouseId": 1999
     },
     {
-      "id": 1444,
+      "id": "1444 ",
       "name": "Karim El Mansouri",
       "dob": "1990-09-15",
       "city": "Marrakesh",
       "secretKey": "RK189987A",
       "warehouseId": 2991
+    },
+    {
+      "id": "d581",
+      "params": {
+        "name": "",
+        "secretKey": ""
+      }
+    },
+    {
+      "id": "dba3",
+      "params": {
+        "name": "",
+        "secretKey": ""
+      }
+    },
+    {
+      "id": "80ec",
+      "params": {
+        "name": "",
+        "secretKey": ""
+      }
+    },
+    {
+      "id": "d5d3",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907J"
+      }
+    },
+    {
+      "id": "930d",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907Jb"
+      }
+    },
+    {
+      "id": "b533",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907Jb"
+      }
+    },
+    {
+      "id": "cb07",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907Jb"
+      }
+    },
+    {
+      "id": "14a7",
+      "params": {
+        "name": "",
+        "secretKey": ""
+      }
+    },
+    {
+      "id": "6c8e",
+      "params": {
+        "name": "",
+        "secretKey": ""
+      }
+    },
+    {
+      "id": "b7b4",
+      "params": {
+        "name": "",
+        "secretKey": ""
+      }
+    },
+    {
+      "id": "bbd5",
+      "params": {
+        "name": "",
+        "secretKey": ""
+      }
+    },
+    {
+      "id": "ba45",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907J"
+      }
+    },
+    {
+      "id": "0507",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907J"
+      }
+    },
+    {
+      "id": "6a7c",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907J"
+      }
+    },
+    {
+      "id": "d005",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907J"
+      }
+    },
+    {
+      "id": "6236",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907J"
+      }
+    },
+    {
+      "id": "a34b",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907J"
+      }
+    },
+    {
+      "id": "8741",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907J"
+      }
+    },
+    {
+      "id": "f5be",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907J"
+      }
+    },
+    {
+      "id": "aee1",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907J"
+      }
+    },
+    {
+      "id": "0a37",
+      "params": {
+        "name": "Amine Boutaleb",
+        "secretKey": "AH90907J"
+      }
     }
   ],
   "statistics": {
