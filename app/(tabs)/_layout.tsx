@@ -9,7 +9,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: 'black',
       }}>
-      <Tabs.Screen
+      <Tabs.Screen 
         name="index"
         options={{
           title: 'Tab One',
