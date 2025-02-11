@@ -57,25 +57,33 @@ export default function LoginScreen() {
       const { data } = await apiClient.get('/warehousemans', {
         params: {
           name: username,
-          secretKey: secretKey,
         },
       });
-      
-      const user = data[0];
-      router.push('/(tabs)')
-    } catch (err) {
-        if (err instanceof yup.ValidationError) {
-          const errorMessages: { [key: string]: string } = {};
-          err.inner.forEach(error => {
-            if (error.path) errorMessages[error.path] = error.message;
-          });
-          setErrors(errorMessages);
-        } else {
-          Alert.alert('Authentication failed');
-        }
-      } finally {
-        setLoading(false);
+      if (!data || data.length === 0) {
+        Alert.alert('User not found');
+        return;
       }
+      const user = data[0];
+      // console.log(user);
+      if (user.name !== username || user.secretKey !== secretKey) {
+        Alert.alert('Invalid credentials');
+        return;
+      }
+      router.push('/(tabs)');
+      
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        const errorMessages: { [key: string]: string } = {};
+        err.inner.forEach((error) => {
+          if (error.path) errorMessages[error.path] = error.message;
+        });
+        setErrors(errorMessages);
+      } else {
+        Alert.alert('Authentication failed');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -134,11 +142,11 @@ export default function LoginScreen() {
             className="mt-4 items-center rounded-xl bg-yellow-700 py-4"
             onPress={handleLogin}
             disabled={loading}>
-                {loading ? (
-                  <ActivityIndicator color="white" size="small" />
-                ) : (
-                  <Text className="text-white text-base font-semibold">Sign in</Text>
-                )}
+            {loading ? (
+              <ActivityIndicator color="white" size="small" />
+            ) : (
+              <Text className="text-base font-semibold text-white">Sign in</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
