@@ -11,6 +11,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as yup from 'yup';
@@ -18,13 +19,6 @@ import apiClient from './(utils)/api';
 import { router } from 'expo-router';
 
 const loginSchema = yup.object().shape({
-  username: yup
-    .string()
-    .trim()
-    .required('Full Name is required.')
-    .matches(/^[A-Za-z\s]+$/, 'Full Name cannot contain numbers or special characters.')
-    .min(2, 'Full Name must be at least 2 characters')
-    .max(50, 'Full Name cannot exceed 50 characters'),
   secretKey: yup.string().required('secretKey is required'),
 });
 
@@ -42,7 +36,6 @@ const SocialButton: React.FC<SocialButtonProps> = ({ icon, onPress }) => (
 );
 
 export default function LoginScreen() {
-  const [username, setUsername] = useState('');
   const [secretKey, setsecretKey] = useState('');
   const [showsecretKey, setShowsecretKey] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -50,13 +43,13 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
-      await loginSchema.validate({ username, secretKey }, { abortEarly: false });
+      await loginSchema.validate({ secretKey }, { abortEarly: false });
       setErrors({});
       setLoading(true);
 
       const { data } = await apiClient.get('/warehousemans', {
         params: {
-          name: username,
+          secretKey: secretKey,
         },
       });
       if (!data || data.length === 0) {
@@ -64,11 +57,14 @@ export default function LoginScreen() {
         return;
       }
       const user = data[0];
-      // console.log(user);
-      if (user.name !== username || user.secretKey !== secretKey) {
+      console.log(user.id);
+      if ( user.secretKey !== secretKey) {
         Alert.alert('Invalid credentials');
         return;
       }
+      await AsyncStorage.setItem('secretKey',secretKey)
+      console.log(await AsyncStorage.getItem('secretKey'));
+      
       router.push('/(tabs)');
       
     } catch (err) {
@@ -102,22 +98,6 @@ export default function LoginScreen() {
         </View>
 
         <View className="space-y-4 px-6">
-          <View className="space-y-2">
-            <Text className="ml-1 py-2 text-sm text-gray-400">Username</Text>
-            <View className="flex-row items-center rounded-xl bg-gray-800 px-4 py-3">
-              <TextInput
-                className="flex-1 text-base text-white"
-                placeholder="Enter username"
-                placeholderTextColor="#666"
-                value={username}
-                onChangeText={setUsername}
-              />
-            </View>
-            {errors.username && (
-              <Text className="ml-1 text-sm text-red-500">{errors.username}</Text>
-            )}
-          </View>
-
           <View className="space-y-2">
             <Text className="ml-1 py-2 text-sm text-gray-400">secretKey</Text>
             <View className="flex-row items-center rounded-xl bg-gray-800 px-4 py-3">
