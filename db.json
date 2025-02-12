@@ -50,7 +50,7 @@
         {
           "id": 1999,
           "name": "Gueliz B2",
-          "quantity": 20,
+          "quantity": 11,
           "localisation": {
             "city": "Marrakesh",
             "latitude": 31.628674,
@@ -60,7 +60,7 @@
         {
           "id": 2991,
           "name": "Lazari H2",
-          "quantity": 5,
+          "quantity": 6,
           "localisation": {
             "city": "Oujda",
             "latitude": 34.689404,

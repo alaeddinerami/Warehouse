@@ -92,7 +92,8 @@ export default function ProductsScreen() {
                   name: product.name,
                   image: product.image,
                   price: product.solde ?? product.price,
-                  type: product.type
+                  type: product.type,
+                  stocks: JSON.stringify(product.stocks),
                 }
               })}
               className="mb-4 rounded-lg bg-white p-4 shadow-md">
@@ -110,7 +111,7 @@ export default function ProductsScreen() {
                     <View className="mt-2 flex-row products-center justify-between">
                       <Text
                         className={`rounded-full px-2 py-1 text-xs ${
-                          totalStock > 0 ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
+                         totalStock > 10 ? "text-green-600" : totalStock > 0 ? "text-yellow-600" : "text-red-600"
                         }`}>
                         {totalStock > 0 ? 'En Stock' : 'Rupture de Stock'}
                       </Text>
