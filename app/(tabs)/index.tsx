@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, RefreshControl, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, TextInput, RefreshControl, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
 import { Search } from 'lucide-react-native';
 import apiClient from '../(utils)/api';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 
 interface Product {
   id: number;
@@ -77,11 +78,24 @@ export default function ProductsScreen() {
           {filteredProducts.map((product) => {
             const totalStock = product.stocks.reduce((sum, stock) => sum + stock.quantity, 0);
             const hasDiscount = product.solde && product.solde < product.price;
-            console.log('Image URL:', product.image); 
-            console.log('Product Name:', product.name, 'Image URL:', product.image);
-
+            // console.log('Image URL:', product.image); 
+            // {console.log(product.id)}
             return (
-              <View key={product.id} className="mb-4 rounded-lg bg-white p-4 shadow-md">
+              <TouchableOpacity 
+              key={product.id} 
+              
+              
+              onPress={() => router.push({
+                pathname: "/product/[id]",
+                params: {
+                  id: product.id,
+                  name: product.name,
+                  image: product.image,
+                  price: product.solde ?? product.price,
+                  type: product.type
+                }
+              })}
+              className="mb-4 rounded-lg bg-white p-4 shadow-md">
                 <View className="flex-row">
                   <Image source={{uri:product.image}} style={{ width: 80, height: 80 }} />
                   <View className="ml-4 flex-1">
@@ -104,7 +118,7 @@ export default function ProductsScreen() {
                     </View>
                   </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </ScrollView>
