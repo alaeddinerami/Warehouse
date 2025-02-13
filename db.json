@@ -50,7 +50,7 @@
         {
           "id": 1999,
           "name": "Gueliz B2",
-          "quantity": 11,
+          "quantity": 1,
           "localisation": {
             "city": "Marrakesh",
             "latitude": 31.628674,
@@ -60,7 +60,7 @@
         {
           "id": 2991,
           "name": "Lazari H2",
-          "quantity": 6,
+          "quantity": 0,
           "localisation": {
             "city": "Oujda",
             "latitude": 34.689404,
@@ -90,6 +90,39 @@
           "at": "2025-02-02"
         }
       ]
+    },
+    {
+      "id": "a5c8",
+      "name": "Laba",
+      "type": "Accessoires",
+      "barcode": "848879478",
+      "price": 467,
+      "solde": 84,
+      "supplier": "Fsha",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/3fab8cb2-3c19-48e3-b5dc-92b22b01466d.jpeg",
+      "stocks": [
+        {
+          "id": 2991,
+          "name": "Lazari H2",
+          "quantity": 14,
+          "localisation": {
+            "city": "Oujda",
+            "latitude": 34.689404,
+            "longitude": -1.912823
+          }
+        },
+        {
+          "id": 1999,
+          "name": "Gueliz B2",
+          "quantity": 1,
+          "localisation": {
+            "city": "Marrakesh",
+            "latitude": 31.628674,
+            "longitude": -7.992047
+          }
+        }
+      ],
+      "editedBy": []
     }
   ],
   "warehousemans": [
