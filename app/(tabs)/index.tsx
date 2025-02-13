@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, RefreshControl, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
-import { Search } from 'lucide-react-native';
+import { Plus, Search } from 'lucide-react-native';
 import apiClient from '../(utils)/api';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -124,6 +124,14 @@ export default function ProductsScreen() {
           })}
         </ScrollView>
       )}
+       <TouchableOpacity
+        className="absolute bottom-6 right-6 bg-yellow-600 p-4 rounded-full shadow-lg"
+        onPress={() => {
+          router.push('/product/create')
+        }}
+      >
+        <Plus size={24} color="white" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
