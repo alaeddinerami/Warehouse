@@ -16,12 +16,18 @@
         {
           "launchMode": "most-recent"
         }
-        
       ],
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
+          "cameraPermission": "Autoriser l'accès à la caméra pour scanner les codes-barres"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos",
+          "cameraPermission": "Allow $(PRODUCT_NAME) to take photos"
         }
       ]
     ],
