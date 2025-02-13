@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import apiClient from '../(utils)/api';
+import { ArrowBigLeft, ArrowBigLeftDash, ArrowBigLeftIcon, ArrowLeft, ArrowLeftFromLine, ArrowLeftSquare, X } from 'lucide-react-native';
 
 interface Product {
   id: number;
@@ -112,9 +113,12 @@ export default function ProductDetails() {
         : 'bg-red-100 text-red-800';
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100">
-      <ScrollView className="flex-1">
+    <SafeAreaView className="flex-1 bg-gray-100 p-2">
+      <ScrollView className="flex-1"  showsVerticalScrollIndicator={false}>
         <View className="bg-white shadow-sm">
+        <TouchableOpacity onPress={() => router.back()}>
+            <ArrowLeft size={32} color="#6b7292" />
+          </TouchableOpacity>
           <Image
             source={{ uri: product.image }}
             className="h-64 w-full"
