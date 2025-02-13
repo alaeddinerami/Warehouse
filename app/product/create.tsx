@@ -7,13 +7,15 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Pressable,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Plus, Save, X, Image as ImageIcon } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import apiClient from '../(utils)/api';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useCameraPermissions } from 'expo-camera';
 
 // Predefined warehouse data based on db.json
 const warehouses = [
@@ -64,7 +66,23 @@ export default function ProductFormScreen() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [permission, requsetPermission] = useCameraPermissions();
+  // const isPermissionGranted = Boolean(permission?.granted)
 
+  const handleScanPress = async () => {
+    if (!permission?.granted) {
+      const permissionResult = await requsetPermission();
+      if (permissionResult.granted) {
+        router.push('/qr-scanner');
+      } else {
+        Alert.alert('Permission Required', 'Camera permission is required to scan QR codes', [
+          { text: 'OK' },
+        ]);
+      }
+    } else {
+      router.push('/qr-scanner');
+    }
+  };
   const productTypes = ['Informatique', 'Accessoires', 'Électronique', 'Autre'];
 
   const validateForm = () => {
@@ -96,7 +114,19 @@ export default function ProductFormScreen() {
       setFormData({ ...formData, image: result.assets[0].uri });
     }
   };
-
+  const params = useLocalSearchParams();
+  
+  // Add this useEffect to handle the scanned barcode
+  React.useEffect(() => {
+    if (params.scannedBarcode) {
+      setFormData(prev => ({
+        ...prev,
+        barcode: params.scannedBarcode as string
+      }));
+      // Clear any previous barcode error
+      setErrors(prev => ({ ...prev, barcode: '' }));
+    }
+  }, [params.scannedBarcode]);
   const handleAddStock = () => {
     setFormData({
       ...formData,
@@ -133,7 +163,7 @@ export default function ProductFormScreen() {
         price: parseFloat(formData.price),
         solde: formData.solde ? parseFloat(formData.solde) : undefined,
         stocks: formattedStocks,
-        editedBy: [], 
+        editedBy: [],
       };
 
       await apiClient.post('/products', newProduct);
@@ -149,7 +179,7 @@ export default function ProductFormScreen() {
   return (
     <SafeAreaView className="h-full p-4">
       <ScrollView className="flex bg-gray-100 " showsVerticalScrollIndicator={false}>
-        <View className="mb-6 flex-row items-center justify-between" >
+        <View className="mb-6 flex-row items-center justify-between">
           <Text className="text-2xl font-bold text-gray-900"> créer Produit</Text>
           <TouchableOpacity onPress={() => router.back()}>
             <X size={24} color="#6b7280" />
@@ -188,15 +218,16 @@ export default function ProductFormScreen() {
               </Picker>
             </View>
           </View>
-
           <View>
             <Text className="mb-1 text-sm font-medium text-gray-700">Code-barres *</Text>
             <View className="flex-row-reverse justify-between space-x-2 px-5">
-              <TouchableOpacity className="rounded-lg bg-blue-500 px-4 py-2">
+              <TouchableOpacity
+                onPress={handleScanPress}
+                className="rounded-lg bg-yellow-500 px-4 py-2">
                 <Text className="font-medium text-white">Scan QR Code</Text>
               </TouchableOpacity>
               <TextInput
-                className={`rounded-lg min-w-44 bg-white p-3 ${errors.barcode ? 'border border-red-500' : ''}`}
+                className={`min-w-44 rounded-lg bg-white p-3 ${errors.barcode ? 'border border-red-500' : ''}`}
                 placeholder="AD54653V"
                 value={formData.barcode}
                 onChangeText={(text) => setFormData({ ...formData, barcode: text })}
