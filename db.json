@@ -170,6 +170,54 @@
       "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/43af647d-d992-4321-b6f5-9cded9af0b30.jpeg",
       "stocks": [],
       "editedBy": []
+    },
+    {
+      "id": "5a0b",
+      "name": "Atlas",
+      "type": "Accessoires",
+      "barcode": "6111035001673",
+      "price": 8.66,
+      "solde": 858,
+      "supplier": "Vjff",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/fd6839ce-64c8-4d46-97c5-7627088edc10.jpeg",
+      "stocks": [],
+      "editedBy": []
+    },
+    {
+      "id": "a0a3",
+      "name": "CK ch",
+      "type": "Électronique",
+      "barcode": "6111035000430",
+      "price": 805,
+      "solde": 865,
+      "supplier": "Cbnn",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/88e1e47c-7363-4a9e-9ac1-26904a91a530.jpeg",
+      "stocks": [],
+      "editedBy": []
+    },
+    {
+      "id": "49e5",
+      "name": "Fswf",
+      "type": "Électronique",
+      "barcode": "8001841273174",
+      "price": 58,
+      "solde": 885,
+      "supplier": "Ssjqk",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/e9a06781-1786-497d-b072-9d9e03b0d025.jpeg",
+      "stocks": [],
+      "editedBy": []
+    },
+    {
+      "id": "d457",
+      "name": "CNN. C",
+      "type": "Informatique",
+      "barcode": "4230200340118",
+      "price": 85,
+      "solde": 85,
+      "supplier": "Vjffg",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/a7a17558-d9d5-4c39-abb0-690bab323b9a.jpeg",
+      "stocks": [],
+      "editedBy": []
     }
   ],
   "warehousemans": [

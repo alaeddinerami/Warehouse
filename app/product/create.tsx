@@ -70,7 +70,7 @@ export default function ProductFormScreen() {
   const handleScanPress = async () => {
     if (!permission?.granted) {
       const permissionResult = await requsetPermission();
-      if (permissionResult.granted) {
+      if (permissionResult.granted) {        
         router.push('/qr-scanner');
       } else {
         Alert.alert('Permission Required', 'Camera permission is required to scan QR codes', [
