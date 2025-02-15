@@ -38,7 +38,6 @@ const warehouses = [
     },
   },
 ];
-
 interface ProductFormState {
   name: string;
   type: string;
@@ -67,7 +66,6 @@ export default function ProductFormScreen() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [permission, requsetPermission] = useCameraPermissions();
-  // const isPermissionGranted = Boolean(permission?.granted)
 
   const handleScanPress = async () => {
     if (!permission?.granted) {
@@ -116,14 +114,12 @@ export default function ProductFormScreen() {
   };
   const params = useLocalSearchParams();
   
-  // Add this useEffect to handle the scanned barcode
   React.useEffect(() => {
     if (params.scannedBarcode) {
       setFormData(prev => ({
         ...prev,
         barcode: params.scannedBarcode as string
       }));
-      // Clear any previous barcode error
       setErrors(prev => ({ ...prev, barcode: '' }));
     }
   }, [params.scannedBarcode]);

@@ -13,7 +13,7 @@
         {
           "id": 1999,
           "name": "Gueliz B2",
-          "quantity": 21,
+          "quantity": 13,
           "localisation": {
             "city": "Marrakesh",
             "latitude": 31.628674,
@@ -23,7 +23,7 @@
         {
           "id": 2991,
           "name": "Lazari H2",
-          "quantity": 24,
+          "quantity": 3,
           "localisation": {
             "city": "Oujda",
             "latitude": 34.689404,
@@ -114,7 +114,7 @@
         {
           "id": 1999,
           "name": "Gueliz B2",
-          "quantity": 1,
+          "quantity": -3,
           "localisation": {
             "city": "Marrakesh",
             "latitude": 31.628674,
@@ -160,49 +160,15 @@
       "editedBy": []
     },
     {
-      "id": "3271",
-      "name": "Sgjans ",
-      "type": "Informatique",
-      "barcode": "6111128000088",
-      "price": 81,
-      "solde": 88,
-      "supplier": "Xgjan",
-      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/29b72227-3678-41a7-b2b8-9af4fda9ac3e.jpeg",
-      "stocks": [
-        {
-          "id": 1999,
-          "name": "Gueliz B2",
-          "quantity": 80,
-          "localisation": {
-            "city": "Marrakesh",
-            "latitude": 31.628674,
-            "longitude": -7.992047
-          }
-        }
-      ],
-      "editedBy": []
-    },
-    {
-      "id": "af76",
-      "name": "XbajJ",
-      "type": "Informatique",
-      "barcode": "6111128000088",
-      "price": 897,
-      "solde": 4,
-      "supplier": "Sbjan",
-      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/3867ba02-86a3-4ead-ab35-bf3d6c556565.jpeg",
-      "stocks": [
-        {
-          "id": 2991,
-          "name": "Lazari H2",
-          "quantity": 0,
-          "localisation": {
-            "city": "Oujda",
-            "latitude": 34.689404,
-            "longitude": -1.912823
-          }
-        }
-      ],
+      "id": "d284",
+      "name": "Can cvh",
+      "type": "Accessoires",
+      "barcode": "http://hpgo.co/GWFVQR6FB",
+      "price": 88,
+      "solde": 8765,
+      "supplier": "Cvv",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/43af647d-d992-4321-b6f5-9cded9af0b30.jpeg",
+      "stocks": [],
       "editedBy": []
     }
   ],

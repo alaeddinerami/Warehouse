@@ -154,7 +154,7 @@ export default function ProductDetails() {
                     <TouchableOpacity
                       key={stock.id}
                       className={`mr-2 rounded-lg px-4 py-2 ${
-                        adjustment.warehouseId === String(stock.id) ? 'bg-blue-500' : 'bg-gray-200'
+                        adjustment.warehouseId === String(stock.id) ? 'bg-yellow-500' : 'bg-gray-200'
                       }`}
                       onPress={() =>
                         setAdjustment((prev) => ({ ...prev, warehouseId: String(stock.id) }))
