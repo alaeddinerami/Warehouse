@@ -29,21 +29,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="scanner"
-        options={{
-          title: 'Scanner',
-          headerShown: false,
-          tabBarIcon: ({ focused, color }) => (
-            <FontAwesome 
-              name="barcode" 
-              size={32} 
-              color={focused ? '#1a1a1a' : '#666'} 
-              style={{ marginBottom: -4 }}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="stats"
         options={{
           title: 'Statistics',
