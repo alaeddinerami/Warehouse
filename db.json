@@ -13,7 +13,7 @@
         {
           "id": 1999,
           "name": "Gueliz B2",
-          "quantity": 14,
+          "quantity": 13,
           "localisation": {
             "city": "Marrakesh",
             "latitude": 31.628674,
@@ -50,7 +50,7 @@
         {
           "id": 1999,
           "name": "Gueliz B2",
-          "quantity": 0,
+          "quantity": 110,
           "localisation": {
             "city": "Marrakesh",
             "latitude": 31.628674,
@@ -90,75 +90,6 @@
           "at": "2025-02-02"
         }
       ]
-    },
-    {
-      "id": "d578",
-      "name": "Sanya",
-      "type": "Informatique",
-      "barcode": "6111035002175",
-      "price": 25,
-      "solde": 20,
-      "supplier": "Moto",
-      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/d1f5cb83-c949-4b2a-b24c-6b76ff89deb3.jpeg",
-      "stocks": [
-        {
-          "id": 1999,
-          "name": "Gueliz B2",
-          "quantity": 12,
-          "localisation": {
-            "city": "Marrakesh",
-            "latitude": 31.628674,
-            "longitude": -7.992047
-          }
-        }
-      ],
-      "editedBy": []
-    },
-    {
-      "id": "429b",
-      "name": "Dddd",
-      "type": "Xxx",
-      "barcode": "5449000135544",
-      "price": 12,
-      "solde": 2,
-      "supplier": "Fhv",
-      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/5121837e-8b60-4bd1-bfa2-59d370a6704d.jpeg",
-      "stocks": [
-        {
-          "id": 1999,
-          "name": "Gueliz B2",
-          "quantity": 7,
-          "localisation": {
-            "city": "Marrakesh",
-            "latitude": 31.628674,
-            "longitude": -7.992047
-          }
-        }
-      ],
-      "editedBy": []
-    },
-    {
-      "id": "957d",
-      "name": "Hzh",
-      "type": "Bdjz",
-      "barcode": "62",
-      "price": 861,
-      "solde": 84,
-      "supplier": "Cgaqj",
-      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/60e638a7-eeb9-48b4-9ba2-32fbbc9ba49f.jpeg",
-      "stocks": [
-        {
-          "id": 1999,
-          "name": "Gueliz B2",
-          "quantity": 12,
-          "localisation": {
-            "city": "Marrakesh",
-            "latitude": 31.628674,
-            "longitude": -7.992047
-          }
-        }
-      ],
-      "editedBy": []
     }
   ],
   "warehousemans": [
