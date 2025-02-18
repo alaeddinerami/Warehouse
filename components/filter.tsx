@@ -1,4 +1,3 @@
-// FilterModal.tsx
 import { Picker } from '@react-native-picker/picker';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
@@ -25,8 +24,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const [filterType, setFilterType] = useState('');
   const [filterPrice, setFilterPrice] = useState('');
   const [filterSupplier, setFilterSupplier] = useState('');
-  const [sortBy, setSortBy] = useState('name'); // Default sort by name
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); // Default sort order ascending
+  const [sortBy, setSortBy] = useState('name'); 
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc'); 
 
   const handleApplyFilters = () => {
     onApplyFilters({
