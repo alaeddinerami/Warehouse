@@ -1,9 +1,11 @@
 import { Link, Tabs } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { TabBarIcon } from '../../components/TabBarIcon';
+import { ProtectedRoute } from '~/components/ProtectedRoute';
 
 export default function TabLayout() {
   return (
+    <ProtectedRoute>
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: '#1a1a1a',
@@ -57,5 +59,7 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </ProtectedRoute>
+
   );
 }
