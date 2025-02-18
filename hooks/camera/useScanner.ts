@@ -10,14 +10,17 @@ export default function useScanner() {
   const [scanned, setScanned] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
 
-  const checkBarcodeExists = async (barcode: string): Promise<boolean> => {
+  const checkBarcodeExists = async (barcode: string) => {
     try {
       setIsChecking(true);
       const response = await apiClient.get(`/products?barcode=${barcode}`);
-      return response.data.length > 0;
+      if (response.data.length > 0) {
+        return { exists: true, product: response.data[0] };
+      }
+      return { exists: false, product: null };
     } catch (error) {
       console.error('Error checking barcode:', error);
-      return false;
+      return { exists: false, product: null };
     } finally {
       setIsChecking(false);
     }
@@ -27,38 +30,46 @@ export default function useScanner() {
     if (scanned || isChecking) return;
     
     setScanned(true);
-    router.back();
-    router.setParams({ scannedBarcode: data });
+    
     try {
-      const exists = await checkBarcodeExists(data);
+      const { exists, product } = await checkBarcodeExists(data);
       
-      if (exists) {
+      if (exists && product) {
+        router.push({
+          pathname: "/product/[id]",
+          params: {
+            id: product.id,
+            name: product.name,
+            image: product.image,
+            price: product.solde ?? product.price,
+            type: product.type,
+            stocks: JSON.stringify(product.stocks),
+          }
+        });
+      } else {
         router.back();
-        Alert.alert(
-          'Code-barres existant',
-          'Ce code-barres existe déjà dans la base de données.'
-        );
-        return;
+        router.setParams({ scannedBarcode: data });
       }
-      router.setParams({ scannedBarcode: data });
+      
+      setTimeout(() => setScanned(false), 500);
       
     } catch (error) {
+      console.error('Scanning error:', error);
       Alert.alert(
-        'Erreur',
-        'Une erreur est survenue lors de la vérification du code-barres.',
+        'Error',
+        'An error occurred while checking the barcode.',
         [
           {
             text: 'OK',
             onPress: () => {
-              setScanned(false); 
+              setScanned(false);
+              router.back();
             }
           }
         ]
       );
     }
   };
-
-
 
   return {
     facing,
@@ -67,5 +78,5 @@ export default function useScanner() {
     isChecking,
     requestPermission,
     handleBarCodeScanned,
-  }
+  };
 }
