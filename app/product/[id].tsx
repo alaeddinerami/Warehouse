@@ -8,89 +8,96 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  Button,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import apiClient from '../(utils)/api';
-import { ArrowBigLeft, ArrowBigLeftDash, ArrowBigLeftIcon, ArrowLeft, ArrowLeftFromLine, ArrowLeftSquare, X } from 'lucide-react-native';
-
-interface Product {
-  id: number;
-  name: string;
-  type: string;
-  barcode: string;
-  price: number;
-  solde?: number;
-  supplier: string;
-  image: string;
-  stocks: {
-    id: number;
-    name: string;
-    quantity: number;
-  }[];
-}
+import { ArrowLeft } from 'lucide-react-native';
+import { productService } from '../services/productServiceDeatails';
+import { Product, StockAdjustment } from '../../types/product.types';
+import * as Print from 'expo-print';
 
 export default function ProductDetails() {
   const params = useLocalSearchParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const [adjustment, setAdjustment] = useState({
+  const [adjustment, setAdjustment] = useState<StockAdjustment>({
     quantity: '',
     warehouseId: '',
   });
 
   useEffect(() => {
-    const fetchProductDetails = async () => {
-      try {
-        const response = await apiClient.get(`/products/${params.id}`);
-        setProduct(response.data);
-      } catch (error) {
-        Alert.alert('Error', 'Failed to fetch product details');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProductDetails();
   }, [params.id]);
+
+  const fetchProductDetails = async () => {
+    try {
+      const data = await productService.getProductDetails(params.id as any);
+      setProduct(data);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to fetch product details');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleStockUpdate = async (action: 'add' | 'remove') => {
     if (!product) return;
 
-    if (!adjustment.quantity || !adjustment.warehouseId) {
-      Alert.alert('Error', 'Please select warehouse and enter quantity');
-      return;
-    }
-
-    const quantity = parseInt(adjustment.quantity);
-    if (isNaN(quantity)) {
-      Alert.alert('Error', 'Please enter valid quantity');
+    const validationError = productService.validateStockAdjustment(adjustment);
+    if (validationError) {
+      Alert.alert('Error', validationError);
       return;
     }
 
     try {
       setLoading(true);
-      const updatedStocks = product.stocks.map((stock) =>
-        stock.id === parseInt(adjustment.warehouseId)
-          ? {
-              ...stock,
-              quantity: action === 'add' ? stock.quantity + quantity : stock.quantity - quantity,
-            }
-          : stock
-      );
-
-      const response = await apiClient.patch(`/products/${product.id}`, {
-        stocks: updatedStocks,
-      });
-
-      setProduct({ ...product, stocks: response.data.stocks });
+      const updatedProduct = await productService.updateProductStock(product, adjustment, action);
+      setProduct(updatedProduct);
       setAdjustment({ quantity: '', warehouseId: '' });
       Alert.alert('Success', `Stock ${action === 'add' ? 'added' : 'removed'}`);
     } catch (error) {
       Alert.alert('Error', 'Failed to update stock');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePrintPDF = async () => {
+    if (!product) return;
+
+    const htmlContent = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #333; }
+            .product-image { width: 100%; height: auto; }
+            .product-details { margin-top: 20px; }
+            .product-details p { margin: 5px 0; }
+            .stock-status { margin-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <h1>${product.name}</h1>
+          <div class="product-details">
+            <p><strong>Type:</strong> ${product.type}</p>
+            <p><strong>Price:</strong> ${product.solde || product.price} DH</p>
+            ${product.solde ? `<p><strong>Original Price:</strong> <s>${product.price} DH</s></p>` : ''}
+            <p><strong>Barcode:</strong> ${product.barcode}</p>
+            <p><strong>Supplier:</strong> ${product.supplier}</p>
+            <p><strong>Total Stock:</strong> ${productService.calculateStockStatus(product).totalStock} units</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    try {
+      await Print.printAsync({
+        html: htmlContent,
+      });
+    } catch (error) {
+      Alert.alert('Error', 'Failed to generate PDF');
     }
   };
 
@@ -102,21 +109,17 @@ export default function ProductDetails() {
     );
   }
 
-  const totalStock = product.stocks.reduce((sum, stock) => sum + stock.quantity, 0);
-  const stockStatus =
-    totalStock > 10 ? 'En stock' : totalStock > 0 ? 'Stock faible' : 'Rupture de stock';
-  const stockColor =
-    totalStock > 10
-      ? 'bg-green-100 text-green-800'
-      : totalStock > 0
-        ? 'bg-yellow-100 text-yellow-800'
-        : 'bg-red-100 text-red-800';
+  const {
+    totalStock,
+    status: stockStatus,
+    color: stockColor,
+  } = productService.calculateStockStatus(product);
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100 p-2">
-      <ScrollView className="flex-1"  showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="bg-white shadow-sm">
-        <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.back()}>
             <ArrowLeft size={32} color="#6b7292" />
           </TouchableOpacity>
           <Image
@@ -126,9 +129,10 @@ export default function ProductDetails() {
           />
           <View className="p-4">
             <Text className="text-2xl font-bold text-gray-800">{product.name}</Text>
+
             <Text className="mt-1 text-lg text-gray-600">{product.type}</Text>
             <View className="mt-2 flex-row items-center">
-              <Text className="text-xl font-semibold text-blue-600">
+              <Text className="text-xl font-semibold text-green-600">
                 {product.solde || product.price} DH
               </Text>
               {product.solde && (
@@ -137,6 +141,7 @@ export default function ProductDetails() {
             </View>
           </View>
         </View>
+
         <View className="mt-4 bg-white p-4 shadow-sm">
           <View className="mb-4 flex-row items-center justify-between">
             <Text className="text-lg font-semibold">Gestion du Stock</Text>
@@ -154,7 +159,9 @@ export default function ProductDetails() {
                     <TouchableOpacity
                       key={stock.id}
                       className={`mr-2 rounded-lg px-4 py-2 ${
-                        adjustment.warehouseId === String(stock.id) ? 'bg-yellow-500' : 'bg-gray-200'
+                        adjustment.warehouseId === String(stock.id)
+                          ? 'bg-yellow-500'
+                          : 'bg-gray-200'
                       }`}
                       onPress={() =>
                         setAdjustment((prev) => ({ ...prev, warehouseId: String(stock.id) }))
@@ -190,7 +197,7 @@ export default function ProductDetails() {
 
               <View className="flex-row gap-2">
                 <TouchableOpacity
-                  className="flex-1 items-center rounded-lg bg-green-500 py-3"
+                  className="flex-1 items-center rounded-lg bg-yellow-500 py-3"
                   onPress={() => handleStockUpdate('add')}
                   disabled={loading}>
                   <Text className="font-semibold text-white">Réapprovisionner</Text>
@@ -212,12 +219,10 @@ export default function ProductDetails() {
 
         <View className="mt-4 bg-white p-4 shadow-sm">
           <Text className="mb-4 text-lg font-semibold">Détails du Produit</Text>
-
           <View className="mb-3 flex-row items-center justify-between">
             <Text className="text-gray-600">Code-barres:</Text>
             <Text className="font-medium">{product.barcode}</Text>
           </View>
-
           <View className="mb-3 flex-row items-center justify-between">
             <Text className="text-gray-600">Fournisseur:</Text>
             <Text className="font-medium">{product.supplier}</Text>
@@ -226,6 +231,9 @@ export default function ProductDetails() {
             <Text className="text-gray-600">Stock Total:</Text>
             <Text className="font-medium">{totalStock} unités</Text>
           </View>
+        </View>
+        <View className="mt-4 bg-white p-4 shadow-sm bg">
+          <Button  title="Print Product Details" onPress={handlePrintPDF} />
         </View>
       </ScrollView>
     </SafeAreaView>
