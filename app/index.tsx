@@ -5,22 +5,14 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as yup from 'yup';
-import apiClient from './(utils)/api';
 import { router } from 'expo-router';
-
-const loginSchema = yup.object().shape({
-  secretKey: yup.string().required('secretKey is required'),
-});
+import { ValidationError } from 'yup';
+import { AuthService } from './services/authService';
 
 interface SocialButtonProps {
   icon: any;
@@ -36,39 +28,25 @@ const SocialButton: React.FC<SocialButtonProps> = ({ icon, onPress }) => (
 );
 
 export default function LoginScreen() {
-  const [secretKey, setsecretKey] = useState('');
-  const [showsecretKey, setShowsecretKey] = useState(false);
+  const [secretKey, setSecretKey] = useState('');
+  const [showSecretKey, setShowSecretKey] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     try {
-      await loginSchema.validate({ secretKey }, { abortEarly: false });
-      setErrors({});
       setLoading(true);
+      setErrors({});
 
-      const { data } = await apiClient.get('/warehousemans', {
-        params: {
-          secretKey: secretKey,
-        },
-      });
-      if (!data || data.length === 0) {
-        Alert.alert('User not found');
-        return;
-      }
-      const user = data[0];
-      console.log(user.id);
-      if ( user.secretKey !== secretKey) {
-        Alert.alert('Invalid credentials');
-        return;
-      }
-      await AsyncStorage.setItem('secretKey',secretKey)
-      console.log(await AsyncStorage.getItem('secretKey'));
+      const response = await AuthService.login(secretKey);
       
-      router.push('/(tabs)');
-      
+      if (response.success) {
+        router.push('/(tabs)');
+      } else {
+        Alert.alert(response.message || 'Authentication failed');
+      }
     } catch (err) {
-      if (err instanceof yup.ValidationError) {
+      if (err instanceof ValidationError) {
         const errorMessages: { [key: string]: string } = {};
         err.inner.forEach((error) => {
           if (error.path) errorMessages[error.path] = error.message;
@@ -105,12 +83,12 @@ export default function LoginScreen() {
                 className="flex-1 text-base text-white"
                 placeholder="Enter secretKey"
                 placeholderTextColor="#666"
-                secureTextEntry={!showsecretKey}
+                secureTextEntry={!showSecretKey}
                 value={secretKey}
-                onChangeText={setsecretKey}
+                onChangeText={setSecretKey}
               />
-              <TouchableOpacity onPress={() => setShowsecretKey(!showsecretKey)}>
-                <Text className="text-gray-400">{showsecretKey ? '👁️' : '🙈'}</Text>
+              <TouchableOpacity onPress={() => setShowSecretKey(!showSecretKey)}>
+                <Text className="text-gray-400">{showSecretKey ? '👁️' : '🙈'}</Text>
               </TouchableOpacity>
             </View>
             {errors.secretKey && (
