@@ -29,25 +29,24 @@ export const warehouses: Warehouse[] = [
   },
 ];
 
-export const productTypes = ['Informatique', 'Accessoires', 'Électronique', 'Autre'];
 
 class ProductFormService {
-  validateForm(formData: ProductFormState): ProductFormErrors {
-    const errors: ProductFormErrors = {};
+validateForm(formData: ProductFormState): ProductFormErrors {
+  const errors: ProductFormErrors = {};
 
-    if (!formData.name) errors.name = 'Le nom est requis';
-    if (!formData.barcode) errors.barcode = 'Le code-barres est requis';
-    if (!formData.price) errors.price = 'Le prix est requis';
-    if (!formData.supplier) errors.supplier = 'Le fournisseur est requis';
+  if (!formData.name) errors.name = 'Le nom est requis';
+  if (!formData.barcode) errors.barcode = 'Le code-barres est requis';
+  if (!formData.price) errors.price = 'Le prix est requis';
+  if (!formData.supplier) errors.supplier = 'Le fournisseur est requis';
 
-    formData.stocks.forEach((stock, index) => {
-      if (stock.quantity && !stock.warehouseId) {
-        errors[`stock-${index}`] = 'Sélectionnez un entrepôt';
-      }
-    });
+  formData.stocks.forEach((stock, index) => {
+    if (stock.quantity && !stock.warehouseId) {
+      errors[`stock-${index}`] = 'Sélectionnez un entrepôt';
+    }
+  });
 
-    return errors;
-  }
+  return errors;
+}
 
   async pickImage(): Promise<string | null> {
     try {
