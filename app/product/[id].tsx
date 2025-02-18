@@ -16,6 +16,7 @@ import { ArrowLeft } from 'lucide-react-native';
 import { productService } from '../services/productServiceDeatails';
 import { Product, StockAdjustment } from '../../types/product.types';
 import * as Print from 'expo-print';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function ProductDetails() {
   const params = useLocalSearchParams();
@@ -119,7 +120,7 @@ export default function ProductDetails() {
     <SafeAreaView className="flex-1 bg-gray-100 p-2">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="bg-white shadow-sm">
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.push('/(tabs)')}>
             <ArrowLeft size={32} color="#6b7292" />
           </TouchableOpacity>
           <Image
@@ -200,13 +201,13 @@ export default function ProductDetails() {
                   className="flex-1 items-center rounded-lg bg-yellow-500 py-3"
                   onPress={() => handleStockUpdate('add')}
                   disabled={loading}>
-                  <Text className="font-semibold text-white">Réapprovisionner</Text>
+                  <AntDesign name="pluscircleo" size={24} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   className="flex-1 items-center rounded-lg bg-red-500 py-3"
                   onPress={() => handleStockUpdate('remove')}
                   disabled={loading || totalStock === 0}>
-                  <Text className="font-semibold text-white">Décharger</Text>
+                  <AntDesign name="minuscircleo" size={24} color="white" />
                 </TouchableOpacity>
               </View>
             </>
