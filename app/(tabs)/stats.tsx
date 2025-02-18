@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { fetchStatistics } from '../services/statistics';
 import { SafeAreaView } from 'react-native-safe-area-context';
-// import { Statistics } from '~/types/statistics.types';
 
  interface Statistics {
   totalProducts: number;
