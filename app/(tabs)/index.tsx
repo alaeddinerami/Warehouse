@@ -1,36 +1,27 @@
+// ProductsScreen.tsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, RefreshControl, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native';
-import { Plus, Search } from 'lucide-react-native';
-import apiClient from '../(utils)/api';
+import { Plus, Search, SlidersHorizontal } from 'lucide-react-native';
+import apiClient from '../../(utils)/api';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-
-interface Product {
-  id: number;
-  name: string;
-  type: string;
-  barcode: string;
-  price: number;
-  solde?: number;
-  supplier: string;
-  image: string;
-  stocks: {
-    id: number;
-    quantity: number;
-  }[];
-}
+import { Product } from '~/types/product.types';
+import FilterModal from '~/components/filter';
 
 export default function ProductsScreen() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const fetchProducts = async () => {
     try {
       const response = await apiClient.get('/products');
       setProducts(response.data);
+      setFilteredProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
@@ -48,43 +39,100 @@ export default function ProductsScreen() {
     fetchProducts();
   };
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleFiltersApplied = (filters: { 
+    name: string; 
+    type: string; 
+    price: string; 
+    supplier: string; 
+    sortBy: string; 
+    sortOrder: 'asc' | 'desc' 
+  }) => {
+    let filtered = products;
+
+    if (filters.name) {
+      filtered = filtered.filter(product => product.name.toLowerCase().includes(filters.name.toLowerCase()));
+    }
+    if (filters.type) {
+      filtered = filtered.filter(product => product.type.toLowerCase().includes(filters.type.toLowerCase()));
+    }
+    if (filters.price) {
+      filtered = filtered.filter(product => product.price.toString().includes(filters.price));
+    }
+    if (filters.supplier) {
+      filtered = filtered.filter(product => product.supplier.toLowerCase().includes(filters.supplier.toLowerCase()));
+    }
+
+    switch (filters.sortBy) {
+      case 'name':
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'price':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'quantity':
+        filtered.sort((a, b) => a.stocks.reduce((sum, stock) => sum + stock.quantity, 0) - b.stocks.reduce((sum, stock) => sum + stock.quantity, 0));
+        break;
+      default:
+        break;
+    }
+
+    if (filters.sortOrder === 'desc') {
+      filtered = filtered.reverse();
+    }
+
+    setFilteredProducts(filtered);
+  };
+
+  const handleSearch = (text: string) => {
+    setSearchQuery(text);
+    const filtered = products.filter(product =>
+      product.name.toLowerCase().includes(text.toLowerCase()) ||
+      product.type.toLowerCase().includes(text.toLowerCase()) ||
+      product.price.toString().includes(text) ||
+      product.supplier.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100">
-      <View className="bg-white px-4 py-3 shadow-sm">
-        <View className="flex-row products-center rounded-lg bg-gray-100 px-3 py-2">
+      <View className="bg-white px-4 py-2 shadow-sm flex-row justify-between items-center">
+        <View className="flex-row items-center border border-gray-200 rounded-lg px-2 py-1 flex-1 mr-2">
           <Search size={20} color="#666" />
           <TextInput
-            className="ml-2 flex-1 text-gray-700"
+            className="flex-1 ml-2 text-gray-700"
             placeholder="Rechercher un produit..."
             placeholderTextColor="#999"
             value={searchQuery}
-            onChangeText={setSearchQuery}
+            onChangeText={handleSearch}
           />
         </View>
+        <TouchableOpacity
+          onPress={() => setIsModalVisible(true)}
+          className="p-2 bg-gray-200 rounded-lg"
+        >
+          <SlidersHorizontal size={24} color="#666" />
+        </TouchableOpacity>
       </View>
 
+      <FilterModal
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        onApplyFilters={handleFiltersApplied}
+      />
+
       {loading ? (
-        <View className="flex-1 items-center justify-center">
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#007bff" />
         </View>
       ) : (
         <ScrollView
-          className="flex-1 px-4 py-2"
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-          {filteredProducts.map((product) => {
-            const totalStock = product.stocks.reduce((sum, stock) => sum + stock.quantity, 0);
-            const hasDiscount = product.solde && product.solde < product.price;
-            // console.log('Image URL:', product.image); 
-            // {console.log(product.id)}
-            return (
-              <TouchableOpacity 
-              key={product.id} 
-              
-              
+          className="px-4 py-2"
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        >
+          {filteredProducts.map((product) => (
+            <TouchableOpacity
+              key={product.id}
               onPress={() => router.push({
                 pathname: "/product/[id]",
                 params: {
@@ -96,39 +144,41 @@ export default function ProductsScreen() {
                   stocks: JSON.stringify(product.stocks),
                 }
               })}
-              className="mb-4 rounded-lg bg-white p-4 shadow-md">
-                <View className="flex-row">
-                  <Image source={{uri:product.image}} style={{ width: 80, height: 80 }} />
-                  <View className="ml-4 flex-1">
-                    <Text className="text-lg font-semibold text-gray-900">{product.name}</Text>
-                    <Text className="text-gray-600">{product.type}</Text>
-                    <View className="mt-1 flex-row products-center">
-                      <Text className="font-bold text-gray-900">{product.solde ?? product.price} DH</Text>
-                      {hasDiscount && (
-                        <Text className="ml-2 text-red-500 line-through">{product.price} DH</Text>
-                      )}
-                    </View>
-                    <View className="mt-2 flex-row products-center justify-between">
-                      <Text
-                        className={`rounded-full px-2 py-1 text-xs ${
-                         totalStock > 10 ? "text-green-600" : totalStock > 0 ? "text-yellow-600" : "text-red-600"
-                        }`}>
-                        {totalStock > 0 ? 'En Stock' : 'Rupture de Stock'}
-                      </Text>
-                      <Text className="text-sm text-gray-500">Total: {totalStock} unités</Text>
-                    </View>
+              className="mb-4 rounded-lg bg-white p-4 shadow-sm"
+            >
+              <View className="flex-row">
+                <Image source={{ uri: product.image }} className="w-20 h-20 rounded-lg" />
+                <View className="ml-4 flex-1">
+                  <Text className="text-lg font-bold text-gray-800">{product.name}</Text>
+                  <Text className="text-base text-gray-600">{product.type}</Text>
+                  <View className="flex-row items-center mt-2">
+                    <Text className="text-base font-bold text-gray-800">{product.solde ?? product.price} $</Text>
+                    {product.solde && product.solde < product.price && (
+                      <Text className="text-base text-red-500 line-through ml-2">{product.price} $</Text>
+                    )}
+                  </View>
+                  <View className="flex-row items-center mt-2">
+                    <Text
+                      className={[
+                        'text-sm font-bold px-2 py-1 rounded-lg',
+                        product.stocks.reduce((sum, stock) => sum + stock.quantity, 0) > 10 ? 'text-green-700 bg-green-100' :
+                        product.stocks.reduce((sum, stock) => sum + stock.quantity, 0) > 0 ? 'text-yellow-700 bg-yellow-100' : 'text-red-700 bg-red-100',
+                      ].join(' ')}
+                    >
+                      {product.stocks.reduce((sum, stock) => sum + stock.quantity, 0) > 0 ? 'En Stock' : 'Rupture de Stock'}
+                    </Text>
+                    <Text className="text-sm text-gray-600 ml-2">Total: {product.stocks.reduce((sum, stock) => sum + stock.quantity, 0)} unités</Text>
                   </View>
                 </View>
-              </TouchableOpacity>
-            );
-          })}
+              </View>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       )}
-       <TouchableOpacity
-        className="absolute bottom-6 right-6 bg-yellow-600 p-4 rounded-full shadow-lg"
-        onPress={() => {
-          router.push('/product/create')
-        }}
+
+      <TouchableOpacity
+        className="absolute bottom-6 right-6 bg-yellow-400 p-4 rounded-full shadow-lg"
+        onPress={() => router.push('/product/create')}
       >
         <Plus size={24} color="white" />
       </TouchableOpacity>
