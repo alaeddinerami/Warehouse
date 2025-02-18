@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,50 +7,14 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
-  Pressable,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Plus, Save, X, Image as ImageIcon } from 'lucide-react-native';
-import * as ImagePicker from 'expo-image-picker';
-import apiClient from '../(utils)/api';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCameraPermissions } from 'expo-camera';
-
-// Predefined warehouse data based on db.json
-const warehouses = [
-  {
-    id: 1999,
-    name: 'Gueliz B2',
-    localisation: {
-      city: 'Marrakesh',
-      latitude: 31.628674,
-      longitude: -7.992047,
-    },
-  },
-  {
-    id: 2991,
-    name: 'Lazari H2',
-    localisation: {
-      city: 'Oujda',
-      latitude: 34.689404,
-      longitude: -1.912823,
-    },
-  },
-];
-interface ProductFormState {
-  name: string;
-  type: string;
-  barcode: string;
-  price: string;
-  solde?: string;
-  supplier: string;
-  image: string;
-  stocks: Array<{
-    warehouseId: number;
-    quantity: string;
-  }>;
-}
+import { productFormService, warehouses, productTypes } from '../services/productFormService';
+import { ProductFormState, ProductFormErrors } from '../../types/product-form.types';
 
 export default function ProductFormScreen() {
   const [formData, setFormData] = useState<ProductFormState>({
@@ -63,13 +27,25 @@ export default function ProductFormScreen() {
     image: '',
     stocks: [],
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<ProductFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [permission, requsetPermission] = useCameraPermissions();
+  const [permission, requestPermission] = useCameraPermissions();
+  const params = useLocalSearchParams();
+
+  
+  useEffect(() => {
+    if (params.scannedBarcode) {
+      setFormData(prev => ({
+        ...prev,
+        barcode: params.scannedBarcode as string
+      }));
+      setErrors(prev => ({ ...prev, barcode: '' }));
+    }
+  }, [params.scannedBarcode]);
 
   const handleScanPress = async () => {
     if (!permission?.granted) {
-      const permissionResult = await requsetPermission();
+      const permissionResult = await requestPermission();
       if (permissionResult.granted) {        
         router.push('/qr-scanner');
       } else {
@@ -81,48 +57,14 @@ export default function ProductFormScreen() {
       router.push('/qr-scanner');
     }
   };
-  const productTypes = ['Informatique', 'Accessoires', 'Électronique', 'Autre'];
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    if (!formData.name) newErrors.name = 'Le nom est requis';
-    if (!formData.barcode) newErrors.barcode = 'Le code-barres est requis';
-    if (!formData.price) newErrors.price = 'Le prix est requis';
-    if (!formData.supplier) newErrors.supplier = 'Le fournisseur est requis';
-
-    formData.stocks.forEach((stock, index) => {
-      if (stock.quantity && !stock.warehouseId) {
-        newErrors[`stock-${index}`] = 'Sélectionnez un entrepôt';
-      }
-    });
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
   const handleImagePick = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setFormData({ ...formData, image: result.assets[0].uri });
+    const imageUri = await productFormService.pickImage();
+    if (imageUri) {
+      setFormData({ ...formData, image: imageUri });
     }
   };
-  const params = useLocalSearchParams();
-  
-  React.useEffect(() => {
-    if (params.scannedBarcode) {
-      setFormData(prev => ({
-        ...prev,
-        barcode: params.scannedBarcode as string
-      }));
-      setErrors(prev => ({ ...prev, barcode: '' }));
-    }
-  }, [params.scannedBarcode]);
+
   const handleAddStock = () => {
     setFormData({
       ...formData,
@@ -137,32 +79,15 @@ export default function ProductFormScreen() {
   };
 
   const handleSubmit = async () => {
-    if (!validateForm()) return;
+    const validationErrors = productFormService.validateForm(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
     setIsSubmitting(true);
     try {
-      // Transform stocks data to match db.json structure
-      const formattedStocks = formData.stocks
-        .filter((stock) => stock.warehouseId && stock.quantity)
-        .map((stock) => {
-          const warehouse = warehouses.find((w) => w.id === stock.warehouseId);
-          return {
-            id: warehouse!.id,
-            name: warehouse!.name,
-            quantity: parseInt(stock.quantity),
-            localisation: warehouse!.localisation,
-          };
-        });
-
-      const newProduct = {
-        ...formData,
-        price: parseFloat(formData.price),
-        solde: formData.solde ? parseFloat(formData.solde) : undefined,
-        stocks: formattedStocks,
-        editedBy: [],
-      };
-
-      await apiClient.post('/products', newProduct);
+      await productFormService.createProduct(formData);
       router.back();
       Alert.alert('Succès', 'Produit créé avec succès');
     } catch (error) {
@@ -171,7 +96,6 @@ export default function ProductFormScreen() {
       setIsSubmitting(false);
     }
   };
-
   return (
     <SafeAreaView className="h-full p-4">
       <ScrollView className="flex bg-gray-100 " showsVerticalScrollIndicator={false}>
