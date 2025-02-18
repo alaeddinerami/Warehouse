@@ -13,13 +13,13 @@ import { Plus, Save, X, Image as ImageIcon } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCameraPermissions } from 'expo-camera';
-import { productFormService, warehouses, productTypes } from '../services/productFormService';
+import { productFormService, warehouses } from '../services/productFormService';
 import { ProductFormState, ProductFormErrors } from '../../types/product-form.types';
 
 export default function ProductFormScreen() {
   const [formData, setFormData] = useState<ProductFormState>({
     name: '',
-    type: 'Informatique',
+    type: '',
     barcode: '',
     price: '',
     solde: '',
@@ -88,7 +88,7 @@ export default function ProductFormScreen() {
     setIsSubmitting(true);
     try {
       await productFormService.createProduct(formData);
-      router.back();
+      router.push('/(tabs)');
       Alert.alert('Succès', 'Produit créé avec succès');
     } catch (error) {
       Alert.alert('Erreur', 'Échec de la création du produit');
@@ -101,7 +101,7 @@ export default function ProductFormScreen() {
       <ScrollView className="flex bg-gray-100 " showsVerticalScrollIndicator={false}>
         <View className="mb-6 flex-row items-center justify-between">
           <Text className="text-2xl font-bold text-gray-900"> créer Produit</Text>
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.push('/(tabs)')}>
             <X size={24} color="#6b7280" />
           </TouchableOpacity>
         </View>
@@ -129,13 +129,13 @@ export default function ProductFormScreen() {
           <View>
             <Text className="mb-1 text-sm font-medium text-gray-700">Type de produit *</Text>
             <View className="rounded-lg bg-white">
-              <Picker
-                selectedValue={formData.type}
-                onValueChange={(value) => setFormData({ ...formData, type: value })}>
-                {productTypes.map((type) => (
-                  <Picker.Item key={type} label={type} value={type} />
-                ))}
-              </Picker>
+              <TextInput
+              value={formData.type}
+              placeholder="Type du produit"
+              onChangeText={(text) => setFormData({ ...formData, type: text })}>
+                
+
+              </TextInput>
             </View>
           </View>
           <View>
