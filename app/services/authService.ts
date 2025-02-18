@@ -13,7 +13,16 @@ interface AuthResponse {
 }
 
 export class AuthService {
-  static async login(secretKey: string): Promise<AuthResponse> {
+   async isAuthenticated(): Promise<boolean> {
+    try {
+      const user = await AsyncStorage.getItem('user');
+      return !!user;
+    } catch (error) {
+      console.error('Authentication check failed:', error);
+      return false;
+    }
+  }
+   async login(secretKey: string): Promise<AuthResponse> {
     try {
       await loginSchema.validate({ secretKey }, { abortEarly: false });
 
@@ -38,7 +47,6 @@ export class AuthService {
       }
       const userAuth = JSON.stringify(user);
       await AsyncStorage.setItem('user', userAuth);
-    //   console.log(await AsyncStorage.getItem('user'));
 
       return {
         success: true,
