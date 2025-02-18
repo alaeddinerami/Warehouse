@@ -1,6 +1,7 @@
+import { AuthProvider } from '~/context/AuthContext';
 import '../global.css';
 
-import { Stack } from 'expo-router';
+import { Slot, Stack } from 'expo-router';
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -9,8 +10,10 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }} >
-      <Stack.Screen name="(tabs)"  />
-    </Stack>
+    <AuthProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+    </AuthProvider>
   );
 }
