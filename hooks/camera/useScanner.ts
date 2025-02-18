@@ -2,7 +2,7 @@ import { CameraType, useCameraPermissions } from "expo-camera";
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
-import apiClient from "~/app/(utils)/api";
+import apiClient from "~/(utils)/api";
 
 export default function useScanner() {
   const [facing, setFacing] = useState<CameraType>('back');
@@ -25,8 +25,10 @@ export default function useScanner() {
 
   const handleBarCodeScanned = async ({ type, data }: { type: string; data: string }) => {
     if (scanned || isChecking) return;
-    setScanned(true);
     
+    setScanned(true);
+    router.back();
+    router.setParams({ scannedBarcode: data });
     try {
       const exists = await checkBarcodeExists(data);
       
@@ -56,9 +58,7 @@ export default function useScanner() {
     }
   };
 
-  function toggleCameraFacing() {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
-  }
+
 
   return {
     facing,
@@ -67,6 +67,5 @@ export default function useScanner() {
     isChecking,
     requestPermission,
     handleBarCodeScanned,
-    toggleCameraFacing,
   }
 }
