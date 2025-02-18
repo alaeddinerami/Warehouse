@@ -12,7 +12,6 @@ export default function QRScannerScreen() {
     scanned,
     requestPermission,
     handleBarCodeScanned,
-    toggleCameraFacing,
   } = useScanner();
 
   if (!permission) {
@@ -40,7 +39,6 @@ export default function QRScannerScreen() {
         facing={facing}
         onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
       >
-        {/* Close Button */}
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => router.back()}
@@ -50,7 +48,6 @@ export default function QRScannerScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Scanning Frame */}
         <View style={styles.scanFrame}>
           <View style={styles.scanOverlay}>
             <View style={styles.cornerTL} />
@@ -60,11 +57,7 @@ export default function QRScannerScreen() {
           </View>
         </View>
 
-        {/* Bottom Controls */}
         <View style={styles.controls}>
-          <TouchableOpacity style={styles.flipButton} onPress={toggleCameraFacing}>
-            <Text style={styles.flipButtonText}>Flip Camera</Text>
-          </TouchableOpacity>
           
           <View style={styles.instructionContainer}>
             <Text style={styles.instructionText}>
