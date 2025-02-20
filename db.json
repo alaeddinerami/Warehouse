@@ -13,7 +13,7 @@
         {
           "id": 1999,
           "name": "Gueliz B2",
-          "quantity": 13,
+          "quantity": 27,
           "localisation": {
             "city": "Marrakesh",
             "latitude": 31.628674,
@@ -23,7 +23,7 @@
         {
           "id": 2991,
           "name": "Lazari H2",
-          "quantity": 3,
+          "quantity": 6,
           "localisation": {
             "city": "Oujda",
             "latitude": 34.689404,
@@ -90,6 +90,41 @@
           "at": "2025-02-02"
         }
       ]
+    },
+    {
+      "id": "eadf",
+      "name": "Sidi ali",
+      "type": "Water",
+      "barcode": "6111035000027",
+      "price": 12,
+      "solde": 52,
+      "supplier": "Sidi ali",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/fb86b948-5e87-4c7f-a45f-ff0dd071f313.jpeg",
+      "stocks": [],
+      "editedBy": []
+    },
+    {
+      "id": "7948",
+      "name": "Sidi ali",
+      "type": "Water ",
+      "barcode": "1710502524506",
+      "price": 5,
+      "solde": 4,
+      "supplier": "Sidi ali",
+      "image": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540alaeddinerami%252FWarehouse-Management/ImagePicker/1a721f9f-5ae7-42e0-8905-d084bed0df94.jpeg",
+      "stocks": [
+        {
+          "id": 2991,
+          "name": "Lazari H2",
+          "quantity": 4,
+          "localisation": {
+            "city": "Oujda",
+            "latitude": 34.689404,
+            "longitude": -1.912823
+          }
+        }
+      ],
+      "editedBy": []
     }
   ],
   "warehousemans": [

@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import apiClient from '../../(utils)/api';
+import apiClient from '../../utils/api';
 import {
   ProductFormState,
   ProductFormErrors,

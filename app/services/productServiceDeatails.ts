@@ -1,4 +1,4 @@
-import apiClient from '../../(utils)/api';
+import apiClient from '../../utils/api';
 import { Product, StockAdjustment, StockStatus } from '../../types/product.types';
 
 class ProductService {

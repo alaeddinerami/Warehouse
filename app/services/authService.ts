@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as yup from 'yup';
-import apiClient from '~/(utils)/api';
+import apiClient from '../../utils/api';
 
 export const loginSchema = yup.object().shape({
   secretKey: yup.string().required('secretKey is required'),

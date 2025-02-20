@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as yup from 'yup';
 import { router } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
-import apiClient from '~/(utils)/api';
+import apiClient from '~/utils/api';
 
 const loginSchema = yup.object().shape({
   secretKey: yup.string().required('Secret key is required'),

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Image } from 'react-native';
 import { Plus, Search, SlidersHorizontal } from 'lucide-react-native';
-import apiClient from '../../(utils)/api';
+import apiClient from '../../utils/api';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Product } from '~/types/product.types';

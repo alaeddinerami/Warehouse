@@ -2,7 +2,7 @@ import { CameraType, useCameraPermissions } from "expo-camera";
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
-import apiClient from "~/(utils)/api";
+import apiClient from "~/utils/api";
 
 export default function useScanner() {
   const [facing, setFacing] = useState<CameraType>('back');

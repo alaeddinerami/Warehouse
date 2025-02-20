@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, View, Alert } from 'react-native';
 import * as Print from 'expo-print';
-import apiClient from '~/(utils)/api';
+import apiClient from '~/utils/api';
 
 const fetchProducts = async () => {
   try {

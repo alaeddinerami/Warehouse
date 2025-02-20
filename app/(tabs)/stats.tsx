@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import { fetchStatistics } from '../services/statistics';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { fetchStatistics } from '../services/statistics';
 
- interface Statistics {
+interface Statistics {
   totalProducts: number;
   totalCities: number;
   outOfStock: number;
@@ -28,6 +28,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function Statistics() {
   const [statistics, setStatistics] = useState<Statistics | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
 
   useEffect(() => {
     loadStatistics();
@@ -60,6 +61,10 @@ export default function Statistics() {
       </View>
     );
   }
+
+  const pickProduct = (city: string) => {
+    setSelectedCity(city);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100">
@@ -94,10 +99,18 @@ export default function Statistics() {
           <Text className="text-xl font-bold text-gray-800 mb-4">Stocks par Ville</Text>
           {statistics.stocksByCity.map(cityStats => (
             <View key={cityStats.city} className="mb-3">
-              <Text className="text-gray-800 font-semibold text-base">{cityStats.city}</Text>
-              <Text className="text-gray-500 text-sm">
-                {cityStats.totalProducts} produits ({cityStats.totalQuantity} unités)
-              </Text>
+              <View className='bg-yellow-600 text-white '>
+                <TouchableOpacity className=" font-semibold p-5"
+                  onPress={() => pickProduct(cityStats.city)}
+                >
+                  <Text className='text-white'>{cityStats.city}</Text>
+                </TouchableOpacity>
+              </View>
+              {selectedCity === cityStats.city && (
+                <Text className="text-gray-500 text-sm">
+                  {cityStats.totalProducts} produits ({cityStats.totalQuantity} unités)
+                </Text>
+              )}
             </View>
           ))}
         </View>
